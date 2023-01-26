@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/Client.dir/Client.cpp.o CMakeFiles/Client.dir/socket/socket.cpp.o CMakeFiles/Client.dir/threadpool/ThreadPool.cpp.o CMakeFiles/Client.dir/RandS/RecvAndSend.cpp.o -o Client  -lpthread 

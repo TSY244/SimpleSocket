@@ -1,0 +1,4 @@
+C:/Users/12414/Desktop/dai_ma_ku/clion/C++/socket_test/cmake-build-debug/CMakeFiles/socket_test.dir
+C:/Users/12414/Desktop/dai_ma_ku/clion/C++/socket_test/cmake-build-debug/CMakeFiles/Client.dir
+C:/Users/12414/Desktop/dai_ma_ku/clion/C++/socket_test/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/12414/Desktop/dai_ma_ku/clion/C++/socket_test/cmake-build-debug/CMakeFiles/rebuild_cache.dir
