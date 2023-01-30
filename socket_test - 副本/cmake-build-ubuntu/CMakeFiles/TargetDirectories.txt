@@ -1,4 +1,0 @@
-/tmp/tmp.iV9dzviEuI/cmake-build-ubuntu/CMakeFiles/socket_test.dir
-/tmp/tmp.iV9dzviEuI/cmake-build-ubuntu/CMakeFiles/Client.dir
-/tmp/tmp.iV9dzviEuI/cmake-build-ubuntu/CMakeFiles/edit_cache.dir
-/tmp/tmp.iV9dzviEuI/cmake-build-ubuntu/CMakeFiles/rebuild_cache.dir
