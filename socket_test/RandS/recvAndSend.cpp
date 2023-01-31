@@ -32,6 +32,7 @@ bool recvAndSend::recvInf()
     /*
      * description: 接受头部
      */
+    uint32_t magicNumber{},type{},padding{},size{};
     cout<<"recvInf"<<endl;
     if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&magicNumber), sizeof(uint32_t), 0))
     {
@@ -56,29 +57,29 @@ bool recvAndSend::recvInf()
     cout<<"type: "<<type<<endl;
     if(type == 0)
     {
-        type=3;
+//        type=3;
         if(!putData())
         {
             ERROR("putData key value")
-            sendData(false);
+            sendData(false, 3);
             return true;
         }
-        sendData(true);
+        sendData(true, 3);
     }
     else if(type == 1)
     {
-        type=4;
+//        type=4;
         if(!deleteData())
         {
             ERROR("deleteData key and value")
-            sendData(false);
+            sendData(false, 4);
             return true;
         }
-        sendData(true);
+        sendData(true, 4);
     }
     else if(type == 2)
     {
-        type=5;
+//        type=5;
         cout<<"get begin"<<endl;
         sendData(getDate());
 
@@ -91,8 +92,11 @@ bool recvAndSend::putData()
      * description: 接受客户端的数据存入map
      * return: 是否成功
      */
+
     cout<<"putData"<<endl;
-    pair<map<string,string>::iterator ,bool> insertDate;
+//    pair<map<string,string>::iterator ,bool> insertDate;
+    string key{},value{};
+    uint32_t keysize{},valuesize{};
     if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keysize), sizeof(uint32_t), 0))
     {
         ERROR("recvInf")
@@ -120,6 +124,7 @@ bool recvAndSend::putData()
         WriteMutexMap.lock();
         Map.at(key)=value;
         WriteMutexMap.unlock();
+        usleep(50000);
         cout<<"putData end"<<endl;
         return true;
     }
@@ -141,13 +146,16 @@ bool recvAndSend::putData()
 
 
 }
-void recvAndSend::sendData(bool sendbool)
+void recvAndSend::sendData(bool sendbool, uint32_t type)
 {
     /*
      * description: respose body
      */
+    //delete or put
+    uint32_t magicNumber = 1234;
+    uint32_t padding{0};
+    uint32_t sendsize= sizeof (bool );
     cout<<"sendData"<<endl;
-    uint32_t sendsize=sizeof (bool);
     if(!safeSend(clientInf->client,reinterpret_cast< char *>(&magicNumber), sizeof(::uint32_t), 0))
         return;
     if(!safeSend(clientInf->client, reinterpret_cast< char *>(&sendsize), sizeof(::uint32_t), 0))
@@ -156,7 +164,6 @@ void recvAndSend::sendData(bool sendbool)
         return;
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&padding), sizeof(::uint32_t), 0))
         return;
-    usleep(8000);
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&sendbool), sizeof(bool), 0))
         return;
     cout<<"sendData end"<<endl;
@@ -167,14 +174,16 @@ bool recvAndSend::deleteData()
      * description: 删除map里面的数据
      * return: 是否成功
      */
+    string key{};
+    uint32_t keySize{};
     cout<<"deleteData"<<endl;
-    if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keysize), sizeof(uint32_t), 0))
+    if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keySize), sizeof(uint32_t), 0))
     {
         ERROR("recvInf")
         return false;
     }
-    key.resize(keysize);
-    if(!safeRecive(clientInf->client, const_cast<char*>(key.data()), keysize, 0))
+    key.resize(keySize);
+    if(!safeRecive(clientInf->client, const_cast<char*>(key.data()), keySize, 0))
     {
         ERROR("recvInf")
         return false;
@@ -187,8 +196,9 @@ bool recvAndSend::deleteData()
         cout<<"End deleteData"<<endl;
         return true;
     }
-    catch(...)
+    catch(exception &e)
     {
+        cout<<e.what()<<endl;
         ERROR("erase")
         WriteMutexMap.unlock();
         return false;
@@ -200,53 +210,59 @@ string recvAndSend::getDate()
      * description: get数据库里面的数据
      * return: 返回客户端get的数据，没有返回NULl
      */
+    string key{},value{};
+    ::uint32_t keySize{};
     cout<<"getDate"<<endl;
     string tem;
-    if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keysize), sizeof(uint32_t), 0))
+    if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keySize), sizeof(uint32_t), 0))
     {
         ERROR("recvInf")
         return "NULL";
     }
-    key.resize(keysize);
-    if(!safeRecive(clientInf->client, const_cast<char*>(key.data()), keysize, 0))
+    key.resize(keySize);
+    if(!safeRecive(clientInf->client, const_cast<char*>(key.data()), keySize, 0))
     {
         ERROR("recvInf")
         return "NULL";
     }
     try
     {
-        ReadMutexMap.lock();
+        WriteMutexMap.lock();
         tem=Map.at(key);
-        ReadMutexMap.unlock();
+        WriteMutexMap.unlock();
         cout<<"End getDate"<<endl;
         return tem;
     }
-    catch(...)
+    catch(exception &e)
     {
-        ReadMutexMap.unlock();
+        cout << e.what() << endl;
+        WriteMutexMap.unlock();
         ERROR("getDate")
         return "NULL";
     }
 }
-void recvAndSend::sendData(const string& sendString)
+void recvAndSend::sendData(const string sendString)
+//作用域改变，上下文切换，引用的位置可能已经不存在，所以不能使用引用
 {
     /*
      * description: 发送get的数据
      */
     cout<<"sendData"<<endl;
-    uint32_t sendsize= sendString.length() + sizeof (::uint32_t);
+    uint32_t magicNumber = 1234;
+    uint32_t type = 5; //get Response
+    uint32_t padding{0};
+    uint32_t sendsize= sendString.length();
+    uint32_t size = 4+ sendsize; //4为uint32_t的大小
     if(!safeSend(clientInf->client, reinterpret_cast<char*>(&magicNumber), sizeof(::uint32_t), 0))
         return;
-    if(!safeSend(clientInf->client, reinterpret_cast<char*>(&sendsize), sizeof(::uint32_t), 0))
+    if(!safeSend(clientInf->client, reinterpret_cast<char*>(&size), sizeof(::uint32_t), 0))
         return;
     if(!safeSend(clientInf->client, reinterpret_cast<char*>(&type), sizeof(::uint32_t), 0) )
         return;
     if(!safeSend(clientInf->client,reinterpret_cast<char*>(&padding), sizeof(::uint32_t), 0) )
         return;
-    sendsize=sendString.length();
     if(!safeSend(clientInf->client, reinterpret_cast<char*>(&sendsize), sizeof(::uint32_t), 0) )
         return;
-    usleep(5000);
     if(!safeSend(clientInf->client, const_cast<char *>(sendString.data()), sendsize, 0) <= 0)
         return;
     cout<<"sendData end"<<endl;

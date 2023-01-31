@@ -29,21 +29,13 @@ struct parameterTransfer
 class recvAndSend
 {
 private:
-    uint32_t magicNumber{};
-    uint32_t size{};
-    uint32_t type{};
-    uint32_t padding{};
     parameterTransfer* clientInf;
-    uint32_t keysize{};
-    string key{};
-    uint32_t valuesize{};
-    string value{};
-    mutex ReadMutexMap{};
+//    mutex ReadMutexMap{};
     mutex WriteMutexMap{};
 private:
     bool putData();
-    void sendData(bool sendbool);
-    void sendData(const string& sendString);
+    void sendData(bool sendbool, uint32_t type);
+    void sendData(const string sendString);
     bool deleteData();
     string getDate();
     static bool safeRecive(int fd, char *buf, ::uint32_t n, int flags);

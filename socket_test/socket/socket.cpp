@@ -68,11 +68,11 @@ serverClass::serverClass()
     }
     while(true)
     {
-        if(saveLock.try_lock()) {
-            saveData();
-            saveLock.unlock();
-        }
-        usleep(10000000);
+//        if(saveLock.try_lock()) {
+//            saveData();
+//            saveLock.unlock();
+//        }
+//        usleep(10000000);
     }
 }
 void serverClass::accepted()
@@ -92,7 +92,6 @@ void serverClass::accepted()
         }
         thread tid(&serverClass::worker, this,tem);
         tid.detach();
-
     }
 }
 void serverClass::worker(parameterTransfer clientIfo)
