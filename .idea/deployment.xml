@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="ubuntu (aad947c0-da61-453c-88f0-0f34c1d8fff1)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.6X1f0edQo3" local="$PROJECT_DIR$/socket_test" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/socket_test/cmake-build-debug-ubuntu" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
