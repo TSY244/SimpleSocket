@@ -117,22 +117,24 @@ bool recvAndSend::putData()
         return false;
     }
     try {
-        mutexMap.lock();
+        WriteMutexMap.lock();
         Map.at(key)=value;
-        mutexMap.unlock();
+        WriteMutexMap.unlock();
         cout<<"putData end"<<endl;
         return true;
     }
     catch(...)
     {
-        insertDate=Map.insert(pair<string,string>(key, value));
-        if(!insertDate.second)
-        {
-            ERROR("insert")
-            mutexMap.unlock();
-            return false;
-        }
-        mutexMap.unlock();
+//        insertDate=Map.insert(pair<string,string>(key, value));
+//        if(!insertDate.second)
+//        {
+//            ERROR("insert")
+//            WriteMutexMap.unlock();
+//            return false;
+//        }
+        //insert效率较低？改用C++ 11新增的emplace
+        Map.emplace(key,value);
+        WriteMutexMap.unlock();
         cout<<"putData end"<<endl;
         return true;
     }
@@ -154,6 +156,7 @@ void recvAndSend::sendData(bool sendbool)
         return;
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&padding), sizeof(::uint32_t), 0))
         return;
+    usleep(8000);
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&sendbool), sizeof(bool), 0))
         return;
     cout<<"sendData end"<<endl;
@@ -177,17 +180,17 @@ bool recvAndSend::deleteData()
         return false;
     }
     try {
-        mutexMap.lock();
-        Map.at(key);
+        WriteMutexMap.lock();
+//        Map.at(key);
         Map.erase(key);
-        mutexMap.unlock();
+        WriteMutexMap.unlock();
         cout<<"End deleteData"<<endl;
         return true;
     }
     catch(...)
     {
         ERROR("erase")
-        mutexMap.unlock();
+        WriteMutexMap.unlock();
         return false;
     }
 }
@@ -212,12 +215,15 @@ string recvAndSend::getDate()
     }
     try
     {
+        ReadMutexMap.lock();
         tem=Map.at(key);
+        ReadMutexMap.unlock();
         cout<<"End getDate"<<endl;
         return tem;
     }
     catch(...)
     {
+        ReadMutexMap.unlock();
         ERROR("getDate")
         return "NULL";
     }
@@ -240,15 +246,17 @@ void recvAndSend::sendData(const string& sendString)
     sendsize=sendString.length();
     if(!safeSend(clientInf->client, reinterpret_cast<char*>(&sendsize), sizeof(::uint32_t), 0) )
         return;
+    usleep(5000);
     if(!safeSend(clientInf->client, const_cast<char *>(sendString.data()), sendsize, 0) <= 0)
         return;
     cout<<"sendData end"<<endl;
 }
 bool recvAndSend::safeSend(int fd, char *buf, ::uint32_t n, int flags)
 {
-    ::uint32_t count=0;
+    ::uint32_t count=0; //已发送的数据字节数
     ::uint32_t i;
-    while((i= send(fd,buf,n-count,flags))>0)
+    while((i= send(fd,buf+count,n-count,flags))>0)
+    // 这里一定要记得让buf产生偏移
     {
         count+=i;
         if(count>=i)

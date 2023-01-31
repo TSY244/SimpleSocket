@@ -35,10 +35,11 @@ private:
     uint32_t padding{};
     parameterTransfer* clientInf;
     uint32_t keysize{};
-    string key;
+    string key{};
     uint32_t valuesize{};
-    string value;
-    mutex mutexMap;
+    string value{};
+    mutex ReadMutexMap{};
+    mutex WriteMutexMap{};
 private:
     bool putData();
     void sendData(bool sendbool);
