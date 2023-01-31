@@ -4,8 +4,8 @@
 
 void catchSignal1(int signum);
 void catchSignal2(int signum);
-serverClass* global= nullptr;
-mutex WriteMutexMap{};
+serverClass* global= nullptr; //接受类的对象的地址，调用saveData
+mutex WriteMutexMap{};  //用一个全局的锁Map防止
 
 int main()
 {
@@ -21,6 +21,7 @@ void catchSignal2(int signum)
 {
     cout<<"SIGTERM "<<signum<<endl;
 }
+//防止使用SIGTERM信号退出不调用saveData
 void catchSignal1(int signum)
 {
     global->saveData();

@@ -8,20 +8,17 @@ map<string,string>Map;
 //创建主线程
 serverClass::serverClass()
 {
-
     //creat socket
     serverFd= socket(AF_INET, SOCK_STREAM, 0);
     if (serverFd == -1) {
         ERROR("socket")
         exit(-1);
     }
-
     //addr
     sockaddr_in addr{};
     addr.sin_addr.s_addr=INADDR_ANY;
     addr.sin_port= htons(PORT);
     addr.sin_family=AF_INET;
-
     //port reuse
     int option=1;
     if(setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, (const char*)(&option), sizeof(option)))
@@ -30,8 +27,6 @@ serverClass::serverClass()
         close(serverFd);
         exit(-1);
     }
-
-
     //bind
     int ret=::bind(serverFd, (sockaddr*)&addr, sizeof(addr));
     if (ret == -1)
@@ -40,7 +35,6 @@ serverClass::serverClass()
         close(serverFd);
         exit(-1);
     }
-
     //listen
     ret=listen(serverFd, 10);
     if (ret == -1) {
@@ -48,22 +42,20 @@ serverClass::serverClass()
         close(serverFd);
         exit(-1);
     }
-
-
 }
 
 [[noreturn]] void serverClass::manager()
 {
     /*
      * description: 用于存储数据和创建accept线程
+     *  more information: noreturn，不会退出该函数
      */
-    cout<<"wait connection........"<<endl;
     if(!importData())
     {
         ERROR("importData")
     }
     vector<thread> tids;
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < MAX_ACCEPT_NUM; ++i) {
         tids.emplace_back(&serverClass::accepted, this);
     }
     while(true)
@@ -99,26 +91,19 @@ void serverClass::worker(parameterTransfer clientIfo)
     /*
      * description: 调用accept，将客户端数据存入clientIfo，ras用于数据库操作
      */
-    /*cout<<"Thread "<<this_thread::get_id()<<" is worker, now"<<endl;*/
-/*    mutexServer.lock();
-    parameterTransfer clientInf=clientIfo.front();
-    clientIfo.pop();
-    mutexServer.unlock();*/
     char ip[32]={0};
 //    cout << "be connected successfully!    " << endl <<
 //         "IP：" << inet_ntop(AF_INET, &clientIfo.addr.sin_addr.s_addr, ip, sizeof(ip)) << endl <<
 //         "PORT：" << ntohs(clientIfo.addr.sin_port) << endl;
+    /*打印信息太乱*/
     recvAndSend ras(&clientIfo);
     while(true)
     {
-        if(!ras.recvInf())
-        {
-            /*ERROR("recvInf")*/
+        if(!ras.recvInformation()) {
             break;
         }
     }
     close(clientIfo.client);
-    /*cout<<"Thread "<<this_thread::get_id()<<" power cut-off"<<endl;*/
 }
 
 void serverClass::saveData()
@@ -126,7 +111,6 @@ void serverClass::saveData()
     /*
      * description: 存储数据
      */
-//    cout<<"saveData"<<endl;
     if(Map.empty())
         return;
     fstream file;
@@ -144,7 +128,6 @@ void serverClass::saveData()
     }
     mutexServer.unlock();
     file.close();
-//    cout<<"saveData end"<<endl;
 }
 
 bool serverClass::importData()
@@ -152,7 +135,6 @@ bool serverClass::importData()
     /*
      * description: 从外界导入数据
      */
-//    cout<<"importData"<<endl;
     fstream  file;
     string temKey,temValue;
     file.open("date.txt", ios::in);
@@ -168,7 +150,6 @@ bool serverClass::importData()
         Map.insert(pair<string,string>(temKey, temValue));
     }
     file.close();
-//    cout<<"importData end"<<endl;
     return true;
 }
 

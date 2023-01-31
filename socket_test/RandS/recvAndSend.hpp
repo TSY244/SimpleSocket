@@ -30,7 +30,6 @@ class recvAndSend
 {
 private:
     parameterTransfer* clientInf;
-//    mutex ReadMutexMap{};
 private:
     bool putData();
     void sendData(bool sendbool, uint32_t type);
@@ -41,7 +40,7 @@ private:
     static bool safeSend(int fd, char *buf, ::uint32_t n, int flags);
 public:
     explicit recvAndSend(void*arg);
-    bool recvInf();
+    bool recvInformation();
 };
 
 extern  mutex WriteMutexMap;

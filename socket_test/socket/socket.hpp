@@ -9,7 +9,7 @@
 using namespace std;
 
 #define PORT  8989
-
+#define MAX_ACCEPT_NUM 4
 
 
 //server
@@ -25,7 +25,6 @@ private:
     void worker(parameterTransfer clientIfo);
     static bool importData();
 private:
-
     int serverFd;
     mutex mutexServer;
     mutex saveLock;
