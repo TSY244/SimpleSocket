@@ -30,7 +30,7 @@ private:
     mutex mutexServer;
     mutex saveLock;
 
-    void accepted();
+    [[noreturn]] void accepted();
 };
 
 
