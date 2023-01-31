@@ -193,7 +193,6 @@ bool recvAndSend::deleteData()
     cout << key <<"  ";
     try {
         WriteMutexMap.lock();
-        Map.at(key);
         Map.erase(key);
         WriteMutexMap.unlock();
 //        cout<<"End deleteData"<<endl;
