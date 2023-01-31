@@ -62,22 +62,20 @@ serverClass::serverClass()
     {
         ERROR("importData")
     }
-    accepted();
-//    vector<thread> tids;
-//    for (int i = 0; i < 4; ++i) {
-//        tids.emplace_back(&serverClass::accepted, this);
-//    }
-//    while(true);
-//    {
-//        if(saveLock.try_lock()) {
-//            saveData();
-//            saveLock.unlock();
-//        }
-//        usleep(10000000);
-//    }
+    vector<thread> tids;
+    for (int i = 0; i < 4; ++i) {
+        tids.emplace_back(&serverClass::accepted, this);
+    }
+    while(true)
+    {
+        if(saveLock.try_lock()) {
+            saveData();
+            saveLock.unlock();
+        }
+        usleep(10000000);
+    }
 }
-
-[[noreturn]] void serverClass::accepted()
+void serverClass::accepted()
 {
     /*
      * description: 调用accept并将客户端数据存入clientIfo
