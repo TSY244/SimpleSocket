@@ -58,10 +58,10 @@ serverClass::serverClass()
      * description: 用于存储数据和创建accept线程
      */
     cout<<"wait connection........"<<endl;
-    if(!importData())
-    {
-        ERROR("importData")
-    }
+//    if(!importData())
+//    {
+//        ERROR("importData")
+//    }
     vector<thread> tids;
     for (int i = 0; i < 4; ++i) {
         tids.emplace_back(&serverClass::accepted, this);
