@@ -31,7 +31,6 @@ class recvAndSend
 private:
     parameterTransfer* clientInf;
 //    mutex ReadMutexMap{};
-    mutex WriteMutexMap{};
 private:
     bool putData();
     void sendData(bool sendbool, uint32_t type);
@@ -45,5 +44,5 @@ public:
     bool recvInf();
 };
 
-
+extern  mutex WriteMutexMap;
 #endif //SOCKET_TEST_RECVANDSEND_HPP

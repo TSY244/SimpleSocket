@@ -68,11 +68,11 @@ serverClass::serverClass()
     }
     while(true)
     {
-//        if(saveLock.try_lock()) {
-//            saveData();
-//            saveLock.unlock();
-//        }
-//        usleep(10000000);
+        if(saveLock.try_lock()) {
+            saveData();
+            saveLock.unlock();
+        }
+        usleep(10000000);
     }
 }
 void serverClass::accepted()
@@ -105,9 +105,9 @@ void serverClass::worker(parameterTransfer clientIfo)
     clientIfo.pop();
     mutexServer.unlock();*/
     char ip[32]={0};
-    cout << "be connected successfully!    " << endl <<
-         "IP：" << inet_ntop(AF_INET, &clientIfo.addr.sin_addr.s_addr, ip, sizeof(ip)) << endl <<
-         "PORT：" << ntohs(clientIfo.addr.sin_port) << endl;
+//    cout << "be connected successfully!    " << endl <<
+//         "IP：" << inet_ntop(AF_INET, &clientIfo.addr.sin_addr.s_addr, ip, sizeof(ip)) << endl <<
+//         "PORT：" << ntohs(clientIfo.addr.sin_port) << endl;
     recvAndSend ras(&clientIfo);
     while(true)
     {
@@ -126,7 +126,7 @@ void serverClass::saveData()
     /*
      * description: 存储数据
      */
-    cout<<"saveData"<<endl;
+//    cout<<"saveData"<<endl;
     if(Map.empty())
         return;
     fstream file;
@@ -152,7 +152,7 @@ bool serverClass::importData()
     /*
      * description: 从外界导入数据
      */
-    cout<<"importData"<<endl;
+//    cout<<"importData"<<endl;
     fstream  file;
     string temKey,temValue;
     file.open("date.txt", ios::in);
@@ -168,7 +168,7 @@ bool serverClass::importData()
         Map.insert(pair<string,string>(temKey, temValue));
     }
     file.close();
-    cout<<"importData end"<<endl;
+//    cout<<"importData end"<<endl;
     return true;
 }
 
