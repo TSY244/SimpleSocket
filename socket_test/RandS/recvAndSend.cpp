@@ -120,6 +120,7 @@ bool recvAndSend::putData()
         ERROR("recvInf")
         return false;
     }
+
     try {
         WriteMutexMap.lock();
         Map.at(key)=value;
@@ -189,6 +190,7 @@ bool recvAndSend::deleteData()
         ERROR("recvInf")
         return false;
     }
+    cout << key <<"  ";
     try {
         WriteMutexMap.lock();
         Map.at(key);
