@@ -5,6 +5,7 @@
 void catchSignal1(int signum);
 void catchSignal2(int signum);
 serverClass* global= nullptr;
+mutex WriteMutexMap{};
 
 int main()
 {

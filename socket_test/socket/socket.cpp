@@ -68,11 +68,11 @@ serverClass::serverClass()
     }
     while(true)
     {
-//        if(saveLock.try_lock()) {
-//            saveData();
-//            saveLock.unlock();
-//        }
-//        usleep(10000000);
+        if(saveLock.try_lock()) {
+            saveData();
+            saveLock.unlock();
+        }
+        usleep(10000000);
     }
 }
 void serverClass::accepted()
@@ -105,9 +105,9 @@ void serverClass::worker(parameterTransfer clientIfo)
     clientIfo.pop();
     mutexServer.unlock();*/
     char ip[32]={0};
-    cout << "be connected successfully!    " << endl <<
-         "IP：" << inet_ntop(AF_INET, &clientIfo.addr.sin_addr.s_addr, ip, sizeof(ip)) << endl <<
-         "PORT：" << ntohs(clientIfo.addr.sin_port) << endl;
+//    cout << "be connected successfully!    " << endl <<
+//         "IP：" << inet_ntop(AF_INET, &clientIfo.addr.sin_addr.s_addr, ip, sizeof(ip)) << endl <<
+//         "PORT：" << ntohs(clientIfo.addr.sin_port) << endl;
     recvAndSend ras(&clientIfo);
     while(true)
     {

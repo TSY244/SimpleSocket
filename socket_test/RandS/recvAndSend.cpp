@@ -54,7 +54,7 @@ bool recvAndSend::recvInf()
         ERROR("recvInf")
         return false;
     }
-    cout<<"type: "<<type<<endl;
+//    cout<<"type: "<<type<<endl;
     if(type == 0)
     {
 //        type=3;
@@ -93,7 +93,7 @@ bool recvAndSend::putData()
      * return: 是否成功
      */
 
-    cout<<"putData"<<endl;
+//    cout<<"putData"<<endl;
 //    pair<map<string,string>::iterator ,bool> insertDate;
     string key{},value{};
     uint32_t keysize{},valuesize{};
@@ -124,8 +124,8 @@ bool recvAndSend::putData()
         WriteMutexMap.lock();
         Map.at(key)=value;
         WriteMutexMap.unlock();
-        usleep(50000);
-        cout<<"putData end"<<endl;
+//        usleep(50000);
+//        cout<<"putData end"<<endl;
         return true;
     }
     catch(exception & e)
@@ -141,7 +141,7 @@ bool recvAndSend::putData()
        // cout<<e.what()<<endl;
         Map.emplace(key,value);
         WriteMutexMap.unlock();
-        cout<<"putData end"<<endl;
+//        cout<<"putData end"<<endl;
         return true;
     }
 
@@ -156,7 +156,7 @@ void recvAndSend::sendData(bool sendbool, uint32_t type)
     uint32_t magicNumber = 1234;
     uint32_t padding{0};
     uint32_t sendsize= sizeof (bool );
-    cout<<"sendData"<<endl;
+//    cout<<"sendData"<<endl;
     if(!safeSend(clientInf->client,reinterpret_cast< char *>(&magicNumber), sizeof(::uint32_t), 0))
         return;
     if(!safeSend(clientInf->client, reinterpret_cast< char *>(&sendsize), sizeof(::uint32_t), 0))
@@ -165,10 +165,9 @@ void recvAndSend::sendData(bool sendbool, uint32_t type)
         return;
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&padding), sizeof(::uint32_t), 0))
         return;
-    usleep(50000);
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&sendbool), sizeof(bool), 0))
         return;
-    cout<<"sendData end"<<endl;
+//    cout<<"sendData end"<<endl;
 }
 bool recvAndSend::deleteData()
 {
@@ -178,7 +177,7 @@ bool recvAndSend::deleteData()
      */
     string key{};
     uint32_t keySize{};
-    cout<<"deleteData"<<endl;
+//    cout<<"deleteData"<<endl;
     if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keySize), sizeof(uint32_t), 0))
     {
         ERROR("recvInf")
@@ -195,7 +194,7 @@ bool recvAndSend::deleteData()
         Map.at(key);
         Map.erase(key);
         WriteMutexMap.unlock();
-        cout<<"End deleteData"<<endl;
+//        cout<<"End deleteData"<<endl;
         return true;
     }
     catch(exception &e)
@@ -214,7 +213,7 @@ string recvAndSend::getDate()
      */
     string key{},value{};
     ::uint32_t keySize{};
-    cout<<"getDate"<<endl;
+//    cout<<"getDate"<<endl;
     string tem;
     if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keySize), sizeof(uint32_t), 0))
     {
@@ -232,7 +231,7 @@ string recvAndSend::getDate()
         WriteMutexMap.lock();
         tem=Map.at(key);
         WriteMutexMap.unlock();
-        cout<<"End getDate"<<endl;
+//        cout<<"End getDate"<<endl;
         return tem;
     }
     catch(exception &e)
@@ -249,7 +248,7 @@ void recvAndSend::sendData(const string sendString)
     /*
      * description: 发送get的数据
      */
-    cout<<"sendData"<<endl;
+//    cout<<"sendData"<<endl;
     uint32_t magicNumber = 1234;
     uint32_t type = 5; //get Response
     uint32_t padding{0};
@@ -267,7 +266,7 @@ void recvAndSend::sendData(const string sendString)
         return;
     if(!safeSend(clientInf->client, const_cast<char *>(sendString.data()), sendsize, 0) <= 0)
         return;
-    cout<<"sendData end"<<endl;
+//    cout<<"sendData end"<<endl;
 }
 bool recvAndSend::safeSend(int fd, char *buf, ::uint32_t n, int flags)
 {
