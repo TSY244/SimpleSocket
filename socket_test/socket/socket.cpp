@@ -144,7 +144,7 @@ void serverClass::saveData()
     }
     mutexServer.unlock();
     file.close();
-    cout<<"saveData end"<<endl;
+//    cout<<"saveData end"<<endl;
 }
 
 bool serverClass::importData()

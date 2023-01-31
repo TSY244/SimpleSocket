@@ -181,13 +181,13 @@ bool recvAndSend::deleteData()
 //    cout<<"deleteData"<<endl;
     if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&keySize), sizeof(uint32_t), 0))
     {
-        ERROR("recvInf")
+//        ERROR("recvInf")
         return false;
     }
     key.resize(keySize);
     if(!safeRecive(clientInf->client, const_cast<char*>(key.data()), keySize, 0))
     {
-        ERROR("recvInf")
+//        ERROR("recvInf")
         return false;
     }
     cout << key <<"  ";
@@ -202,7 +202,7 @@ bool recvAndSend::deleteData()
     catch(exception &e)
     {
         cout<<e.what()<<endl;
-        ERROR("erase")
+//        ERROR("erase")
         WriteMutexMap.unlock();
         return false;
     }
