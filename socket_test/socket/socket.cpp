@@ -63,7 +63,7 @@ serverClass::serverClass()
         ERROR("importData")
     }
     vector<thread> tids;
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < 4; ++i) {
         tids.emplace_back(&serverClass::accepted, this);
     }
     while(true)
