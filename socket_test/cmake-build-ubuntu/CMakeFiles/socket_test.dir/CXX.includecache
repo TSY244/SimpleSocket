@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/tmp/tmp.bAlPicuJO7/main.cpp
+iostream
+-
+socket/socket.hpp
+/tmp/tmp.bAlPicuJO7/socket/socket.hpp
+
+/tmp/tmp.bAlPicuJO7/socket/socket.cpp
+socket.hpp
+/tmp/tmp.bAlPicuJO7/socket/socket.hpp
+
+/tmp/tmp.bAlPicuJO7/socket/socket.hpp
+iostream
+/tmp/tmp.bAlPicuJO7/socket/iostream
+unistd.h
+/tmp/tmp.bAlPicuJO7/socket/unistd.h
+arpa/inet.h
+/tmp/tmp.bAlPicuJO7/socket/arpa/inet.h
+cstring
+/tmp/tmp.bAlPicuJO7/socket/cstring
+thread
+/tmp/tmp.bAlPicuJO7/socket/thread
+queue
+/tmp/tmp.bAlPicuJO7/socket/queue
+mutex
+/tmp/tmp.bAlPicuJO7/socket/mutex
+
