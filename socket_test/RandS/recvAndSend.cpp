@@ -190,7 +190,6 @@ bool recvAndSend::deleteData()
 //        ERROR("recvInf")
         return false;
     }
-    cout << key <<"  ";
     try {
         WriteMutexMap.lock();
         Map.erase(key);
