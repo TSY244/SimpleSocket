@@ -16,7 +16,7 @@ bool recvAndSend::safeRecive(int fd,char *buf, uint32_t n, int flags)
      */
     uint32_t count = 0;
     uint32_t i ;
-    cout<<"safeRecive"<<endl;
+//    cout<<"safeRecive"<<endl;
     while((i = recv(fd, buf + count, n - count, flags)) > 0)
     {
         count += i;
@@ -33,7 +33,7 @@ bool recvAndSend::recvInf()
      * description: 接受头部
      */
     uint32_t magicNumber{},type{},padding{},size{};
-    cout<<"recvInf"<<endl;
+//    cout<<"recvInf"<<endl;
     if(!safeRecive(clientInf->client, reinterpret_cast<char *>(&magicNumber), sizeof(uint32_t), 0))
     {
         /*ERROR("recvInf")*/
@@ -128,7 +128,7 @@ bool recvAndSend::putData()
         cout<<"putData end"<<endl;
         return true;
     }
-    catch(...)
+    catch(exception & e)
     {
 //        insertDate=Map.insert(pair<string,string>(key, value));
 //        if(!insertDate.second)
@@ -138,6 +138,7 @@ bool recvAndSend::putData()
 //            return false;
 //        }
         //insert效率较低？改用C++ 11新增的emplace
+       // cout<<e.what()<<endl;
         Map.emplace(key,value);
         WriteMutexMap.unlock();
         cout<<"putData end"<<endl;
@@ -164,6 +165,7 @@ void recvAndSend::sendData(bool sendbool, uint32_t type)
         return;
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&padding), sizeof(::uint32_t), 0))
         return;
+    usleep(50000);
     if(!safeSend(clientInf->client, reinterpret_cast<char *>(&sendbool), sizeof(bool), 0))
         return;
     cout<<"sendData end"<<endl;
@@ -190,7 +192,7 @@ bool recvAndSend::deleteData()
     }
     try {
         WriteMutexMap.lock();
-//        Map.at(key);
+        Map.at(key);
         Map.erase(key);
         WriteMutexMap.unlock();
         cout<<"End deleteData"<<endl;
